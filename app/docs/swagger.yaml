@@ -1,0 +1,430 @@
+basePath: /api/v1
+consumes:
+- application/json
+definitions:
+  AddUser:
+    properties:
+      user_id:
+        format: uint64
+        type: integer
+        x-go-name: UserID
+    type: object
+    x-go-package: usermanagement/app/internal/httpservice
+  CreateGroup:
+    properties:
+      name:
+        type: string
+        x-go-name: Name
+    type: object
+    x-go-package: usermanagement/app/internal/httpservice
+  CreatePassword:
+    properties:
+      password:
+        type: string
+        x-go-name: Password
+    type: object
+    x-go-package: usermanagement/app/internal/httpservice
+  CreateUser:
+    properties:
+      email:
+        type: string
+        x-go-name: Email
+      name:
+        type: string
+        x-go-name: Name
+      password:
+        type: string
+        x-go-name: Password
+    type: object
+    x-go-package: usermanagement/app/internal/httpservice
+  GroupResponse:
+    properties:
+      id:
+        format: uint64
+        type: integer
+        x-go-name: ID
+      name:
+        type: string
+        x-go-name: Name
+    type: object
+    x-go-package: usermanagement/app/internal
+  GroupsResponse:
+    properties:
+      groups:
+        items:
+          $ref: '#/definitions/GroupResponse'
+        type: array
+        x-go-name: Groups
+      page:
+        format: uint64
+        type: integer
+        x-go-name: Page
+      perPage:
+        format: uint64
+        type: integer
+        x-go-name: PerPage
+      total:
+        format: uint64
+        type: integer
+        x-go-name: Total
+    type: object
+    x-go-package: usermanagement/app/internal
+  UpdateGroup:
+    properties:
+      name:
+        type: string
+        x-go-name: Name
+    type: object
+    x-go-package: usermanagement/app/internal/httpservice
+  UpdateUser:
+    properties:
+      email:
+        type: string
+        x-go-name: Email
+      name:
+        type: string
+        x-go-name: Name
+    type: object
+    x-go-package: usermanagement/app/internal/httpservice
+  UserResponse:
+    properties:
+      email:
+        type: string
+        x-go-name: Email
+      id:
+        format: uint64
+        type: integer
+        x-go-name: ID
+      name:
+        type: string
+        x-go-name: Name
+    type: object
+    x-go-package: usermanagement/app/internal
+  UsersResponse:
+    properties:
+      page:
+        format: uint64
+        type: integer
+        x-go-name: Page
+      perPage:
+        format: uint64
+        type: integer
+        x-go-name: PerPage
+      total:
+        format: uint64
+        type: integer
+        x-go-name: Total
+      users:
+        items:
+          $ref: '#/definitions/UserResponse'
+        type: array
+        x-go-name: Users
+    type: object
+    x-go-package: usermanagement/app/internal
+host: localhost
+info:
+  description: Documentation of our usermanagement API.
+  title: usermanagement.
+  version: 1.0.0
+paths:
+  /groups:
+    get:
+      operationId: getGroupsRequest
+      parameters:
+      - format: uint64
+        in: query
+        name: page
+        type: integer
+        x-go-name: Page
+      - format: uint64
+        in: query
+        name: perPage
+        type: integer
+        x-go-name: PerPage
+      responses:
+        "200":
+          $ref: '#/responses/getGroupsResponse'
+        "400":
+          $ref: '#/responses/serviceError'
+        "500":
+          $ref: '#/responses/serviceError'
+      summary: Get groups.
+      tags:
+      - groups
+    post:
+      operationId: createGroupRequest
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/CreateGroup'
+      responses:
+        "201":
+          $ref: '#/responses/createGroupResponse'
+        "400":
+          $ref: '#/responses/serviceError'
+        "500":
+          $ref: '#/responses/serviceError'
+      summary: Create new group.
+      tags:
+      - groups
+  /groups/{id}:
+    delete:
+      operationId: deleteGroupRequest
+      parameters:
+      - format: uint64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: Id
+      responses:
+        "200":
+          description: ""
+        "400":
+          $ref: '#/responses/serviceError'
+        "500":
+          $ref: '#/responses/serviceError'
+      summary: Delete a group.
+      tags:
+      - groups
+    put:
+      operationId: updateGroupRequest
+      parameters:
+      - format: uint64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: Id
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/UpdateGroup'
+      responses:
+        "200":
+          description: ""
+        "400":
+          $ref: '#/responses/serviceError'
+        "500":
+          $ref: '#/responses/serviceError'
+      summary: Update  a group.
+      tags:
+      - groups
+  /groups/{id}/users:
+    get:
+      operationId: getGroupUsersRequest
+      parameters:
+      - format: uint64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: Id
+      - format: uint64
+        in: query
+        name: page
+        type: integer
+        x-go-name: Page
+      - format: uint64
+        in: query
+        name: perPage
+        type: integer
+        x-go-name: PerPage
+      responses:
+        "200":
+          $ref: '#/responses/getUsersResponse'
+        "400":
+          $ref: '#/responses/serviceError'
+        "500":
+          $ref: '#/responses/serviceError'
+      summary: Get group users.
+      tags:
+      - groups
+    post:
+      operationId: addUserRequest
+      parameters:
+      - format: uint64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: Id
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/AddUser'
+      responses:
+        "200":
+          description: ""
+        "400":
+          $ref: '#/responses/serviceError'
+        "500":
+          $ref: '#/responses/serviceError'
+      summary: Add user to a group.
+      tags:
+      - groups
+  /groups/{id}/users/{userid}:
+    delete:
+      operationId: removeUserRequest
+      parameters:
+      - format: uint64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: Id
+      - format: uint64
+        in: path
+        name: userid
+        required: true
+        type: integer
+        x-go-name: UserID
+      responses:
+        "200":
+          description: ""
+        "400":
+          $ref: '#/responses/serviceError'
+        "500":
+          $ref: '#/responses/serviceError'
+      summary: Remove user from a group.
+      tags:
+      - groups
+  /users:
+    get:
+      operationId: getUsersRequest
+      parameters:
+      - format: uint64
+        in: query
+        name: page
+        type: integer
+        x-go-name: Page
+      - format: uint64
+        in: query
+        name: perPage
+        type: integer
+        x-go-name: PerPage
+      responses:
+        "200":
+          $ref: '#/responses/getUsersResponse'
+        "400":
+          $ref: '#/responses/serviceError'
+        "500":
+          $ref: '#/responses/serviceError'
+      summary: Get users.
+      tags:
+      - users
+    post:
+      operationId: createUserRequest
+      parameters:
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/CreateUser'
+      responses:
+        "201":
+          $ref: '#/responses/createUserResponse'
+        "400":
+          $ref: '#/responses/serviceError'
+        "500":
+          $ref: '#/responses/serviceError'
+      summary: Create new user.
+      tags:
+      - users
+  /users/{id}:
+    delete:
+      operationId: deleteUserRequest
+      parameters:
+      - format: uint64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: Id
+      responses:
+        "200":
+          description: ""
+        "400":
+          $ref: '#/responses/serviceError'
+        "500":
+          $ref: '#/responses/serviceError'
+      summary: Delete a user.
+      tags:
+      - users
+    put:
+      operationId: updateUserRequest
+      parameters:
+      - format: uint64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: Id
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/UpdateUser'
+      responses:
+        "200":
+          description: ""
+        "400":
+          $ref: '#/responses/serviceError'
+        "500":
+          $ref: '#/responses/serviceError'
+      summary: Update user.
+      tags:
+      - users
+  /users/{id}/password:
+    put:
+      operationId: changePwdRequest
+      parameters:
+      - format: uint64
+        in: path
+        name: id
+        required: true
+        type: integer
+        x-go-name: Id
+      - in: body
+        name: Body
+        schema:
+          $ref: '#/definitions/CreatePassword'
+      responses:
+        "200":
+          description: ""
+        "400":
+          $ref: '#/responses/serviceError'
+        "500":
+          $ref: '#/responses/serviceError'
+      summary: Change password of user.
+      tags:
+      - users
+produces:
+- application/json
+responses:
+  createGroupResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/GroupResponse'
+  createUserResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/UserResponse'
+  getGroupsResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/GroupsResponse'
+  getUsersResponse:
+    description: ""
+    schema:
+      $ref: '#/definitions/UsersResponse'
+  serviceError:
+    description: ""
+    schema:
+      properties:
+        message:
+          type: string
+          x-go-name: Message
+      type: object
+schemes:
+- http
+swagger: "2.0"
